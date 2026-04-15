@@ -1,6 +1,12 @@
-from rest_framework import status, viewsets
+from rest_framework import viewsets, filters
 from products.models import Product, Review, Category, CartItem
 from products.serializers import ProductSerializer, ReviewSerializer, CategorySerializer, CartItemSerializer
+from rest_framework.pagination import PageNumberPagination
+from django_filters import rest_framework as django_filters
+from .filters import ProductFilter
+
+class CustomPagination(PageNumberPagination):
+    page_size = 2
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
@@ -13,6 +19,13 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+    pagination_class = CustomPagination #/api/products/?page=2
+
+    filter_backends = (django_filters.DjangoFilterBackend, filters.SearchFilter)
+    filterset_class = ProductFilter
+    search_fields = ['name', 'description']
+
 
 class CartViewSet(viewsets.ModelViewSet):
     serializer_class = CartItemSerializer

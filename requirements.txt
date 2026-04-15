@@ -1,10 +1,11 @@
 asgiref==3.11.1
 Django==5.2.13
+django-filter==25.2
 djangorestframework==3.17.1
 drf-yasg==1.21.7
 inflection==0.5.1
 packaging==23.1
-pillow==10.1.0
+Pillow==10.1.0
 python-dotenv==1.0.0
 pytz==2023.3
 PyYAML==6.0.1
