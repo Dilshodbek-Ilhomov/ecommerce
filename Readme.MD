@@ -3,115 +3,109 @@
 ![Python](https://img.shields.io/badge/python-3.11+-blue.svg)
 ![Django](https://img.shields.io/badge/django-4.2+-green.svg)
 ![DRF](https://img.shields.io/badge/rest_framework-3.14-red.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Celery](https://img.shields.io/badge/celery-5.3+-green.svg)
+![Docker](https://img.shields.io/badge/docker-ready-blue.svg)
 
-Ushbu loyiha zamonaviy elektron tijorat platformasi uchun mo'ljallangan kuchli va kengayuvchan API tizimidir. Django va Django REST Framework yordamida qurilgan bo'lib, to'liq savdo siklini boshqarish imkonini beradi.
-
----
-
-## ✨ Asosiy Imkoniyatlar (Features)
-
-*   **📦 Mahsulotlar Boshqaruvi:** Kategoriyalar, mahsulotlar va ularning batafsil ma'lumotlari.
-*   **⭐ Sharhlar va Reytinglar:** Mahsulotlarga sharhlar qoldirish va o'rtacha reyting hisoblash.
-*   **⚡ Flash Sales:** Maxsus vaqtinchalik chegirmalar tizimi.
-*   **🛒 Buyurtmalar Tizimi:** Savatcha va buyurtma berish jarayoni.
-*   **👤 Foydalanuvchi Boshqaruvi:** Djoser va JWT yordamida autentifikatsiya (Login/Register).
-*   **📊 Ko'rishlar Tarixi:** Foydalanuvchilar ko'rgan mahsulotlar tarixini saqlash.
-*   **🛠 Ombor Boshqaruvi:** Mahsulotlar qoldig'ini (stock) nazorat qilish va to'ldirish.
+A powerful, scalable, and feature-rich E-Commerce API platform built with **Django** and **Django REST Framework**. This project provides a complete backend solution for modern online stores, including background task processing and automated notifications.
 
 ---
 
-## 🚀 Texnologik Stek (Tech Stack)
+## 🚀 Tech Stack
 
-- **Backend:** Django 4.2+, DRF
-- **Autentifikatsiya:** JWT (SimpleJWT), Djoser
-- **Hujjatlashtirish:** Swagger, Redoc (drf-yasg)
-- **Ma'lumotlar Bazasi:** SQLite (Development) / PostgreSQL (Production ready)
-- **Muhit o'zgaruvchilari:** python-dotenv
-
----
-
-## 🛠 O'rnatish va Ishga Tushirish (Installation)
-
-### 1. Loyihani yuklab olish
-```bash
-git clone https://github.com/Dilshodbek-Ilhomov/ecommerce.git
-cd ecommerce
-```
-
-### 2. Virtual muhitni sozlash
-```bash
-python -m venv .venv
-# Windows uchun
-.venv\Scripts\activate
-# Linux/Mac uchun
-source .venv/bin/activate
-```
-
-### 3. Kutubxonalarni o'rnatish
-```bash
-pip install -r requirements.txt
-```
-
-### 4. .env faylini sozlash
-`.env` faylini yarating va quyidagi parametrlarni kiriting:
-```env
-SECRET_KEY=yoursecretkey
-SECRET_KEY='django-insecure-...'
-EMAIL_HOST_USER='your-email@gmail.com'
-EMAIL_HOST_PASSWORD='your-app-password'
-```
-
-### 5. Migratsiyalarni bajarish va ishga tushirish
-```bash
-python manage.py makemigrations
-python manage.py migrate
-python manage.py runserver
-```
+- **Framework:** Django 4.2+, DRF
+- **Task Queue:** Celery 5.3+
+- **Brokers:** RabbitMQ (Task Broker), Redis (Result Backend)
+- **Database:** SQLite (Development) / PostgreSQL compatible
+- **API Documentation:** Swagger UI (drf-yasg)
+- **Environment:** Docker & Docker Compose
 
 ---
 
-## 📖 API Hujjatlari (API Documentation)
+## 🛠 Installation & Setup
 
-Loyiha interaktiv hujjatlarga ega:
+### Using Docker (Recommended)
 
-*   **Swagger UI:** [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-*   **Redoc:** [http://127.0.0.1:8000/redoc/](http://127.0.0.1:8000/redoc/)
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Dilshodbek-Ilhomov/ecommerce.git
+   cd ecommerce
+   ```
+
+2. **Configure Environment Variables:**
+   Create a `.env` file in the root directory:
+   ```env
+   SECRET_KEY='your-secret-key'
+   DEBUG=True
+   TELEGRAM_BOT_TOKEN='your-bot-token'
+   CHAT_ID='your-telegram-chat-id'
+   CELERY_BROKER_URL='amqp://guest:guest@rabbitmq:5672//'
+   CELERY_RESULT_BACKEND='redis://redis:6379/0'
+   ```
+
+3. **Build and Run:**
+   ```bash
+   docker-compose up --build
+   ```
+   The API will be available at [http://localhost:8000/](http://localhost:8000/).
 
 ---
 
-## 💾 Ma'lumotlarni Boshqarish (Database Management)
+### Manual Installation (Local)
 
-Eski serverdan ma'lumotlarni ko'chirish:
+1. **Create and activate virtual environment:**
+   ```bash
+   python -m venv .venv
+   # Windows
+   .venv\Scripts\activate
+   # Linux/Mac
+   source .venv/bin/activate
+   ```
 
-```bash
-# Ma'lumotlarni faylga saqlash
-python manage.py dumpdata > data.json
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-# Bazani tozalash
-python manage.py flush 
+3. **Run Migrations:**
+   ```bash
+   python manage.py migrate
+   ```
 
-# Ma'lumotlarni yuklash
-python manage.py loaddata data.json
-```
+4. **Start Development Server:**
+   ```bash
+   python manage.py runserver
+   ```
+   *Note: For Celery features, you need to have RabbitMQ and Redis running locally.*
 
 ---
 
-## 📂 Loyiha Tuzilishi (Project Structure)
+## 📖 API Documentation
+
+The project includes interactive API documentation:
+
+*   **Swagger UI:** [http://localhost:8000/](http://localhost:8000/)
+*   **ReDoc:** [http://localhost:8000/redoc/](http://localhost:8000/redoc/)
+
+---
+
+## 📂 Project Structure
 
 ```text
 ecommerce/
-├── config/             # Asosiy sozlamalar (settings, urls)
-├── products/           # Asosiy ilova (models, views, serializers)
-│   ├── migrations/     # DB migratsiyalari
-│   ├── models/         # Modellar (split by category)
-│   ├── serializers/    # DRF Serializers
-│   ├── services/       # Biznes logika (business logic)
-│   └── views/          # API endpointlari
-├── .env                # Maxfiy ma'lumotlar
-├── manage.py           # Django boshqaruv skripti
-└── requirements.txt    # Kerakli kutubxonalar
+├── config/             # Core settings and URL routing
+├── products/           # Main application logic
+│   ├── models/         # Database schemas
+│   ├── views/          # API controllers
+│   ├── serializers/    # Data transformation logic
+│   ├── signals.py      # Event triggers (e.g., Order -> Telegram)
+│   └── tasks.py        # Background tasks (Celery)
+├── Dockerfile          # Container definition
+├── docker-compose.yml  # Multi-container orchestration
+├── .env                # Environment configuration
+└── requirements.txt    # Project dependencies
 ```
 
 ---
-🤝 **Muallif:** [Dilshodbek Ilhomov](https://github.com/Dilshodbek-Ilhomov)
+
+## 👨🏻‍💻 Author
+**Dilshodbek Ilhomov** - [GitHub](https://github.com/Dilshodbek-Ilhomov)

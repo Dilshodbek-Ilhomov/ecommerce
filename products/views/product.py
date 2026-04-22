@@ -18,7 +18,7 @@ class CustomPagination(PageNumberPagination):
 
 class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [IsStaffOrReadOnly]  # default =  AllowAny
-    queryset = Product.objects.all()
+    queryset = Product.objects.select_related('category').all()
     serializer_class = ProductSerializer
 
     pagination_class = CustomPagination  # /api/products/?page=2
@@ -36,7 +36,11 @@ class ProductViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-        related_products = Product.objects.filter(category=instance.category).exclude(id=instance.id)[:5]
+        
+        related_products = []
+        if instance.category:
+            related_products = Product.objects.filter(category=instance.category).exclude(id=instance.id)[:5]
+        
         related_serializer = ProductSerializer(related_products, many=True)
         return Response({
             'product': serializer.data,
@@ -53,11 +57,9 @@ class ProductViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def average_rating(self, request, pk=None):
         product = self.get_object()
-        reviews = product.reviews.all()
+        avg_rating = product.reviews.aggregate(models.Avg('rating'))['rating__avg']
 
-        if reviews.count() == 0:
+        if avg_rating is None:
             return Response({"average_rating": "No reviews yet!"})
-
-        avg_rating = sum([review.rating for review in reviews]) / reviews.count()
 
         return Response({"average_rating": avg_rating})

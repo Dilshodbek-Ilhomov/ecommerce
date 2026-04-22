@@ -1,4 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
 from rest_framework import serializers
 
 from products.models import Order, Product
@@ -33,12 +33,20 @@ class OrderSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Product does not exist")
 
     def create(self, validated_data):
-        order = Order.objects.create(**validated_data)
-        product = order.product
-        product.stock -= order.quantity
-        product.save()
-        self.send_confirmation_email(order)
-        return order
+        with transaction.atomic():
+            product = validated_data['product']
+            # Re-fetch with lock to prevent race conditions
+            product = Product.objects.select_for_update().get(id=product.id)
+            
+            if product.stock < validated_data['quantity']:
+                raise serializers.ValidationError("Not enough items in stock.")
+
+            order = Order.objects.create(**validated_data)
+            product.stock -= order.quantity
+            product.save()
+            
+            self.send_confirmation_email(order)
+            return order
 
     def send_confirmation_email(self, order):
         # Here you would send an email. For this example, we'll just print
