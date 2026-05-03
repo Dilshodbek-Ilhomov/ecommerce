@@ -5,7 +5,6 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-
 from products.filters import ProductFilter
 from products.models import Product
 from products.permissions import IsStaffOrReadOnly
@@ -18,7 +17,7 @@ class CustomPagination(PageNumberPagination):
 
 class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [IsStaffOrReadOnly]  # default =  AllowAny
-    queryset = Product.objects.select_related('category').all()
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
     pagination_class = CustomPagination  # /api/products/?page=2
@@ -36,11 +35,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-        
-        related_products = []
-        if instance.category:
-            related_products = Product.objects.filter(category=instance.category).exclude(id=instance.id)[:5]
-        
+        related_products = Product.objects.filter(category=instance.category).exclude(id=instance.id)[:5]
         related_serializer = ProductSerializer(related_products, many=True)
         return Response({
             'product': serializer.data,
@@ -57,9 +52,11 @@ class ProductViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def average_rating(self, request, pk=None):
         product = self.get_object()
-        avg_rating = product.reviews.aggregate(models.Avg('rating'))['rating__avg']
+        reviews = product.reviews.all()
 
-        if avg_rating is None:
+        if reviews.count() == 0:
             return Response({"average_rating": "No reviews yet!"})
+
+        avg_rating = sum([review.rating for review in reviews]) / reviews.count()
 
         return Response({"average_rating": avg_rating})

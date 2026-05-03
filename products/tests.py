@@ -1,17 +1,19 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from .models import Product, Review, Category
+
+User = get_user_model()
 
 
 class ProductViewSetTestCase(APITestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(username="testuser", password="password")
+        self.user = User.objects.create_user(phone_number="+998901234567", password="password")
         self.category1 = Category.objects.create(name="Category1")
-        self.product1 = Product.objects.create(name="Product1", category=self.category1, price=5000)
-        self.product2 = Product.objects.create(name="Product2", category=self.category1, price=6000)
+        self.product1 = Product.objects.create(name="Product1", category=self.category1, price=5000, stock=10)
+        self.product2 = Product.objects.create(name="Product2", category=self.category1, price=6000, stock=10)
         self.review1 = Review.objects.create(product=self.product1, rating=5, user=self.user)
         self.review2 = Review.objects.create(product=self.product1, rating=4, user=self.user)
         self.client = APIClient()
@@ -34,7 +36,6 @@ class ProductViewSetTestCase(APITestCase):
         self.assertIn('related_products', response.data)
 
     def test_top_rated(self):
-        # DRF uses hyphens for action names by default in recent versions
         response = self.client.get(reverse('product-top-rated'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

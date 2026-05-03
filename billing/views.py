@@ -1,10 +1,11 @@
+# views.py
 from rest_framework import views, status
 from rest_framework.response import Response
 import stripe
 from django.conf import settings
 from .models import Payment
 from products.models import Order
-from .serialezers import PaymentSerializer
+from .serializers import PaymentSerializer
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -21,10 +22,10 @@ class CreateChargeView(views.APIView):
             return Response({"error": "Order not found"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            total_amount = order.product.price*order.quantity
+            total_amount = order.product.price * order.quantity
             charge = stripe.Charge.create(
                 amount=int(total_amount*100),
-                currency="uzs",
+                currency="usd",
                 source=stripe_token,
             )
 
