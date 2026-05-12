@@ -9,13 +9,17 @@ User = get_user_model()
 
 
 class CategoryTests(APITestCase):
-    # python manage.py dumpdata products.Category --format=yaml --indent=4 > products/fixtures/categories.yaml
-    fixtures = ['categories']
 
     def setUp(self):
         self.user = User.objects.create_user(phone_number='+998901234567', password='testpass')
         self.client.force_authenticate(user=self.user)
-        self.category1 = Category.objects.first()
+        
+        # Create categories instead of using fixtures
+        self.category1 = Category.objects.create(name='Category 1')
+        Category.objects.create(name='Category 2')
+        Category.objects.create(name='Category 3')
+        Category.objects.create(name='Category 4')
+
 
     def test_category_list(self):
         url = reverse('category-list')
