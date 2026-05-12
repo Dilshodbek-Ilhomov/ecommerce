@@ -184,6 +184,7 @@ STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 
 # SMS Authentication Settings (Infobip)
 SMS_KEY = os.environ.get('SMS_KEY', 'App your_api_key_here')
+CSRF_TRUSTED_ORIGINS = ["https://*", "http://*"]
 SMS_URL = os.environ.get('SMS_URL', 'https://43vvd1.api.infobip.com/sms/2/text/advanced')
 
 # Cache Settings (using Redis for shared cache)
@@ -193,4 +194,4 @@ CACHES = {
         "LOCATION": os.environ.get('CELERY_RESULT_BACKEND', 'redis://redis:6379/0'),
     }
 }
-
+
