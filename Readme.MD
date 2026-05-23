@@ -38,5 +38,5 @@ docker-compose up --build
 
 ---
 
-## 👨🏻‍💻Author
+## 👨🏻‍💻 Author
 **Dilshodbek Ilhomov** - [GitHub](https://github.com/Dilshodbek-Ilhomov)
