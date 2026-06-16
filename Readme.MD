@@ -23,7 +23,7 @@ docker-compose up --build
 
 ## 🚀 Tech Stack
 
-- **Core:** Django 4.2, Django REST Framework
+- **Core:** Django, Django REST Framework
 - **Auth:** JWT (SimpleJWT) & Custom SMS OTP (Infobip)
 - **Async Tasks:** Celery, RabbitMQ, Redis
 - **Documentation:** Swagger UI (drf-yasg)
